@@ -1,4 +1,4 @@
-# Memory game - https://helloivankorgit.github.io/memory_game/
+# Memory game (JavaScript) - https://helloivankorgit.github.io/memory_game/
 
 Level up your memory with this JavaScript memory card game. Flip the cards and match the images together in pairs.
 
