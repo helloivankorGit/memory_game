@@ -1,24 +1,10 @@
 // Get all the cards
 const cards = document.querySelectorAll('.card');
-
-// Shuffle the cards
-for (let i = 0; i < cards.length; i++) {
-  let randomIndex = Math.floor(Math.random() * cards.length);
-  cards[i].style.order = randomIndex;
-}
-
-let flippedCard = false;
 let firstCard, secondCard;
 
-// Add event listener to each card
-cards.forEach(card => card.addEventListener('click', flipCard));
-
 function flipCard() {
-  // Check if two cards are already flipped
-  if (flippedCard) {
-    return;
-  }
-
+  if (secondCard) return;
+  
   this.classList.add('active');
 
   if (!firstCard) {
@@ -26,13 +12,11 @@ function flipCard() {
   } else {
     secondCard = this;
 
-    // Check if the two flipped cards match
     if (firstCard.dataset.card === secondCard.dataset.card) {
       firstCard.classList.add('matched');
       secondCard.classList.add('matched');
       resetCards();
     } else {
-      flippedCard = true;
       setTimeout(() => {
         firstCard.classList.remove('active');
         secondCard.classList.remove('active');
@@ -43,7 +27,17 @@ function flipCard() {
 }
 
 function resetCards() {
-  flippedCard = false;
   firstCard = null;
   secondCard = null;
 }
+
+// Shuffle the cards
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+shuffle(Array.from(cards));
+cards.forEach(card => card.addEventListener('click', flipCard));
