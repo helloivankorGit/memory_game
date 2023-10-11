@@ -1,10 +1,14 @@
-// Get all the cards
-const cards = document.querySelectorAll('.card');
+const cards = Array.from(document.querySelectorAll('.card'));
+let flippedCard = false;
 let firstCard, secondCard;
+let matchedPairs = 0;
+
+// Add event listener to each card
+cards.forEach(card => card.addEventListener('click', flipCard));
 
 function flipCard() {
-  if (secondCard) return;
-  
+  if (flippedCard || this === firstCard) return;
+
   this.classList.add('active');
 
   if (!firstCard) {
@@ -16,7 +20,13 @@ function flipCard() {
       firstCard.classList.add('matched');
       secondCard.classList.add('matched');
       resetCards();
+
+      if (++matchedPairs === cards.length / 2) {
+        initRestartButton();
+        showFinish();
+      }
     } else {
+      flippedCard = true;
       setTimeout(() => {
         firstCard.classList.remove('active');
         secondCard.classList.remove('active');
@@ -29,15 +39,38 @@ function flipCard() {
 function resetCards() {
   firstCard = null;
   secondCard = null;
+  flippedCard = false;
 }
 
-// Shuffle the cards
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
+function showFinish() {
+  document.getElementById('finish').classList.remove('hidden');
 }
 
-shuffle(Array.from(cards));
-cards.forEach(card => card.addEventListener('click', flipCard));
+function initRestartButton() {
+  const restartButton = document.getElementById('restart-button');
+  restartButton.addEventListener('click', restartGame); // Add event listener
+}
+
+function restartGame() {
+  cards.forEach(card => {
+    card.classList.remove('active', 'matched');
+  });
+  resetCards();
+  shuffleCards();
+  hideFinish();
+  matchedPairs = 0;
+}
+
+function hideFinish() {
+  document.getElementById('finish').classList.add('hidden');
+}
+
+function shuffleCards() {
+  cards.forEach(card => {
+    const randomOrder = Math.floor(Math.random() * cards.length);
+    card.style.order = randomOrder;
+  });
+}
+
+
+shuffleCards(); // Initial shuffle
